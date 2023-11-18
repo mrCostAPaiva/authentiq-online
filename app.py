@@ -2,127 +2,85 @@ import pandas as pd
 import streamlit as st
 from sklearn.ensemble import RandomForestClassifier
 
-# função para carregar o dataset
+# Função para carregar o dataset
 @st.cache
 def get_data():
     return pd.read_csv("train.csv")
 
-# função para treinar o modelo
+# Função para treinar o modelo
 def train_model():
     data = get_data()
-    x = data.drop("fake",axis=1)
+    x = data.drop("fake", axis=1)
     y = data["fake"]
     rf_regressor = RandomForestClassifier()
     rf_regressor.fit(x, y)
     return rf_regressor
 
-# criando um dataframe
+# Criando um dataframe
 data = get_data()
 
-# treinando o modelo
+# Treinando o modelo
 model = train_model()
 
-# título
-st.title("Authentiq - Prevendo perfis fakes no Instagram")
+# Título
+st.title("Authentiq - Previsão de Perfis Fakes no Instagram")
 
-# subtítulo
-st.markdown("Este é um Data App utilizado para exibir a solução de Machine Learning para o problema de predição de perfis fakes no Instagram.")
+# Subtítulo
+st.markdown("Este é um Data App utilizado para exibir a solução de Machine Learning para o problema de previsão de perfis fakes no Instagram.")
 
-# verificando o dataset
-st.subheader("Selecionando apenas um pequeno conjunto de atributos")
+# Verificando o dataset
+st.subheader("Selecionando Atributos")
 
-# atributos para serem exibidos por padrão
-defaultcols = ["profile pic","nums/length username","fullname words","nums/length fullname","name==username"]
+# Atributos para serem exibidos por padrão
+defaultcols = ["profile pic", "nums/length username", "fullname words", "nums/length fullname", "name==username"]
 
-# defindo atributos a partir do multiselect
-cols = st.multiselect("Features", data.columns.tolist(), default=defaultcols)
+# Definindo atributos a partir do multiselect
+cols = st.multiselect("Selecione as Features", data.columns.tolist(), default=defaultcols)
 
-# exibindo os top 10 registro do dataframe
+# Exibindo os top 10 registros do dataframe
 st.dataframe(data[cols])
 
-
 ## Barra Lateral
-st.sidebar.subheader("Defina as características do perfil para previsão")
+st.sidebar.subheader("Defina as Características do Perfil para Previsão")
 
-# mapeando dados do usuário para cada atributo
-pic = st.sidebar.selectbox("Tem foto de perfil?",("Sim","Não"))
-# transformando o dado de entrada em valor binário
+# Mapeando dados do usuário para cada atributo
+pic = st.sidebar.selectbox("Tem foto de perfil?", ("Sim", "Não"))
 pic = 1 if pic == "Sim" else 0
 
-private = st.sidebar.selectbox("O perfil é Privado?",("Sim","Não"))
+private = st.sidebar.selectbox("O perfil é Privado?", ("Sim", "Não"))
 private = 1 if private == "Sim" else 0
 
-seguidores = st.sidebar.number_input("Qual o número de seguidores que o perfil tem?",value=100)
-segue = st.sidebar.number_input("Qual o número de pessoas que o perfil segue?",value=100)
-posts = st.sidebar.number_input("Qual o número de publicações que o perfil já fez??",value=10)
+seguidores = st.sidebar.number_input("Número de seguidores", min_value=0, value=100)
+segue = st.sidebar.number_input("Número de pessoas que o perfil segue", min_value=0, value=100)
+posts = st.sidebar.number_input("Número de publicações", min_value=0, value=10)
 
+nome_do_usuario = st.sidebar.text_input('Nome do Usuário').lower()
+nome_real_cadastrado = st.sidebar.text_input('Nome Real Cadastrado').lower()
+bio = st.sidebar.text_input('Bio (Descrição)').lower()
 
+# Inserindo um botão na tela
+btn_load = st.sidebar.button("Fazer Previsão")
 
-nome_do_usuario = st.sidebar.text_input('Digite o nome do usuário:')
-nome_do_usuario = nome_do_usuario.lower()
-
-nome_real_cadastrado = st.sidebar.text_input('Digite o Nome real cadastrado:')
-nome_real_cadastrado = nome_real_cadastrado.lower()
-
-bio = st.sidebar.text_input('Digite a "Bio"(descrição) do instagram do usuário:')
-bio = bio.lower()
-
-
-
-
-# inserindo um botão na tela
-btn_load = st.sidebar.button("Fazer previsão")
-
-nums_lenght_username,fulname_words,num_lenght_fullname,name_username,description_length,external_url,result = 0,0,0,0,0,0,0
-# verifica se o botão foi acionado
+# Verifica se o botão foi acionado
 if btn_load:
-
-    # calculando a variável "nums/lenght username"
-    numeros = sum(c.isdigit() for c in nome_do_usuario)
-    letras = sum(c.isalpha() for c in nome_do_usuario)
-    espacos = sum(c.isspace() for c in nome_do_usuario)
-
-    if numeros == 0:
-        nums_lenght_username= 0
-    else:
-        nums_lenght_username = numeros / (letras + espacos + numeros)
-
-    # calculando a variável "fulname words"
+    # Calculando variáveis
+    nums_lenght_username = sum(c.isdigit() for c in nome_do_usuario) / max(len(nome_do_usuario), 1)
     fulname_words = len(nome_do_usuario.split())
 
-    # calculando a variável "num/lenght fullname"
     numeros_nome = sum(c.isdigit() for c in nome_real_cadastrado)
-    letras_nome = sum(c.isalpha() for c in nome_real_cadastrado)
-    espacos_nome = sum(c.isspace() for c in nome_real_cadastrado)
+    num_lenght_fullname = numeros_nome / max(len(nome_real_cadastrado.split()), 1)
 
-    if numeros_nome == 0 :
-        num_lenght_fullname = 0
-    else:
-        num_lenght_fullname = numeros_nome / len(nome_real_cadastrado.split())
+    name_username = 1 if nome_do_usuario == nome_real_cadastrado else 0
+    description_length = len(bio.replace(" ", ''))
+    external_url = 1 if "https://" in bio or "http://" in bio else 0
 
-
-    # Verificando a variável "name==username"
-    if nome_do_usuario == nome_real_cadastrado:
-        name_username = 1
-    else:
-        name_username = 0
-
-
-    # calculando a variável "description_length"
-    description_length = len(list(bio.replace(" ",'')))
-
-    # verificanddo a variável "external URL"
-    if ("https://" in bio) or ("http://" in bio):
-        external_url = 1
-    else:
-        external_url = 0
-
-
-    result = model.predict([[pic,nums_lenght_username,fulname_words,num_lenght_fullname,name_username,
-                                     description_length,external_url,private,posts,seguidores,segue]])
+    # Faz a previsão
+    result = model.predict([[pic, nums_lenght_username, fulname_words, num_lenght_fullname, name_username,
+                             description_length, external_url, private, posts, seguidores, segue]])
     result = result[0]
 
-    st.subheader("Este perfil...")
+    # Exibindo resultado
+    st.subheader("Resultado da Previsão:")
     if result == 1:
         st.write("É Fake!")
     else:
