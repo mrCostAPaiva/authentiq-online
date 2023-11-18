@@ -22,6 +22,18 @@ data = get_data()
 # treinando o modelo
 model = train_model()
 
+# Define a cor de fundo (substitua "#e6f7ff" pela cor desejada em formato hexadecimal)
+cor_de_fundo = "#e6f7ff"
+
+# Configurações da página
+st.set_page_config(
+    page_title="Authentiq - Prevendo perfis fakes no Instagram",
+    page_icon=":smiley:",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    bg_color=cor_de_fundo
+)
+
 # título
 st.title("Authentiq - Prevendo perfis fakes no Instagram")
 
@@ -40,7 +52,6 @@ cols = st.multiselect("Features", data.columns.tolist(), default=defaultcols)
 # exibindo os top 10 registro do dataframe
 st.dataframe(data[cols])
 
-
 ## Barra Lateral
 st.sidebar.subheader("Defina as características do perfil para previsão")
 
@@ -56,8 +67,6 @@ seguidores = st.sidebar.number_input("Qual o número de seguidores que o perfil 
 segue = st.sidebar.number_input("Qual o número de pessoas que o perfil segue?",value=100)
 posts = st.sidebar.number_input("Qual o número de publicações que o perfil já fez??",value=10)
 
-
-
 nome_do_usuario = st.sidebar.text_input('Digite o nome do usuário:')
 nome_do_usuario = nome_do_usuario.lower()
 
@@ -67,16 +76,13 @@ nome_real_cadastrado = nome_real_cadastrado.lower()
 bio = st.sidebar.text_input('Digite a "Bio"(descrição) do instagram do usuário:')
 bio = bio.lower()
 
-
-
-
 # inserindo um botão na tela
 btn_load = st.sidebar.button("Fazer previsão")
 
 nums_lenght_username,fulname_words,num_lenght_fullname,name_username,description_length,external_url,result = 0,0,0,0,0,0,0
+
 # verifica se o botão foi acionado
 if btn_load:
-
     # calculando a variável "nums/lenght username"
     numeros = sum(c.isdigit() for c in nome_do_usuario)
     letras = sum(c.isalpha() for c in nome_do_usuario)
@@ -100,13 +106,11 @@ if btn_load:
     else:
         num_lenght_fullname = numeros_nome / len(nome_real_cadastrado.split())
 
-
     # Verificando a variável "name==username"
     if nome_do_usuario == nome_real_cadastrado:
         name_username = 1
     else:
         name_username = 0
-
 
     # calculando a variável "description_length"
     description_length = len(list(bio.replace(" ",'')))
@@ -117,13 +121,9 @@ if btn_load:
     else:
         external_url = 0
 
-
     result = model.predict([[pic,nums_lenght_username,fulname_words,num_lenght_fullname,name_username,
                                      description_length,external_url,private,posts,seguidores,segue]])
     result = result[0]
 
     st.subheader("Este perfil...")
-    if result == 1:
-        st.write("É Fake!")
-    else:
-        st.write("Não é Fake!")
+    if
