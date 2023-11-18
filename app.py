@@ -125,5 +125,8 @@ if btn_load:
                                      description_length,external_url,private,posts,seguidores,segue]])
     result = result[0]
 
-    st.subheader("Este perfil...")
-    if
+       st.subheader("Este perfil...")
+    if result == 1:
+        st.write("É Fake!")
+    else:
+        st.write("Não é Fake!")
