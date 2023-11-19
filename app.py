@@ -29,13 +29,13 @@ st.title("@uthentiq - Sua garantia de autenticidade nas redes sociais.")
 st.markdown("Em um mundo digital repleto de conexões, como você pode ter certeza de que cada perfil é genuíno?.")
 
 # verificando o dataset
-st.subheader("Selecionando apenas um pequeno conjunto de atributos")
+st.subheader("A realidade atraves um pequeno conjunto de dados")
 
 # atributos para serem exibidos por padrão
 defaultcols = ["profile pic","nums/length username","fullname words","nums/length fullname","name==username"]
 
 # defindo atributos a partir do multiselect
-cols = st.multiselect("Features", data.columns.tolist(), default=defaultcols)
+cols = st.multiselect("Dados", data.columns.tolist(), default=defaultcols)
 
 # exibindo os top 10 registro do dataframe
 st.dataframe(data[cols])
