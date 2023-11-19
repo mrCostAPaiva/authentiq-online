@@ -23,10 +23,10 @@ data = get_data()
 model = train_model()
 
 # título
-st.title("Authentiq - Prevendo perfis fakes no Instagram")
+st.title("@uthentiq - Sua garantia de autenticidade nas redes sociais.")
 
 # subtítulo
-st.markdown("Este é um Data App utilizado para exibir a solução de Machine Learning para o problema de predição de perfis fakes no Instagram.")
+st.markdown("Em um mundo digital repleto de conexões, como você pode ter certeza de que cada perfil é genuíno?.")
 
 # verificando o dataset
 st.subheader("Selecionando apenas um pequeno conjunto de atributos")
