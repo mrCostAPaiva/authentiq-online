@@ -36,7 +36,7 @@ data = get_data()
 model = train_model()
 
 # Título
-st.title("@uthentiq - Sua garantia de autenticidade nas redes sociais.")
+st.title("@utentici - Sua garantia de autenticidade nas redes sociais.")
 
 # Subtítulo
 st.markdown("Em um mundo digital repleto de conexões, como você pode ter certeza de que cada perfil é genuíno?.")
